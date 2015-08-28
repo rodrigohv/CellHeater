@@ -215,10 +215,7 @@ void updateScreen() {
   lcd.print(" P:");
   lcd.print(int(output));
   lcd.print("  ");
-}
 
-void loop1() {
-  delay(10000);
   Serial.print("Time: ");
   Serial.print(millis());
 
