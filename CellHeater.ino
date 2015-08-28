@@ -22,6 +22,9 @@
 //Temperature resolution
 #define TEMPRES 12
 
+//Minimal duration between serial send (ms)
+#define SERDELAY 10000
+
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(ONE_WIRE_BUS);
 
@@ -52,6 +55,9 @@ char tempChar[8];
 double Kp = 2.5;
 double Ki = 1.2;
 double Kd = 0.1;
+
+//Var for time of last serial send
+unsigned long lastSerial=0;
 
 //Specify the links and initial tuning parameters
 PID myPID(&currentTemp, &output, &targetTemp, Kp, Ki, Kd, DIRECT);
@@ -215,23 +221,24 @@ void updateScreen() {
   lcd.print(" P:");
   lcd.print(int(output));
   lcd.print("  ");
-}
 
-void loop1() {
-  delay(10000);
-  Serial.print("Time: ");
-  Serial.print(millis());
-
-  for (int i=0;i<numDev;i++) {
-    Serial.print("  Temp");
-    Serial.print(i);
-    Serial.print(": ");
-    Serial.print(Temp[i]);
+  if (millis()>=lastSerial+SERDELAY) {
+    lastSerial=millis();
+    
+    Serial.print("Time: ");
+    Serial.print(millis());
+  
+    for (int i=0;i<numDev;i++) {
+      Serial.print("  Temp");
+      Serial.print(i);
+      Serial.print(": ");
+      Serial.print(Temp[i]);
+    }
+    Serial.print("  Target: ");
+    Serial.print(targetTemp);
+    Serial.print("  Output: ");
+    Serial.println(int(output));
   }
-  Serial.print("  Target: ");
-  Serial.print(targetTemp);
-  Serial.print("  Output: ");
-  Serial.println(int(output));
 }
 
 // function to print a device address
