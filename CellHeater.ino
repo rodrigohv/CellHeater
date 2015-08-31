@@ -188,7 +188,7 @@ void loop() {
     double oldTemp = Temp[i];
     Temp[i] = sensors.getTempC(Thermometer[i]);
     if (Temp[i] == -127.0) {Temp[i] = oldTemp;}
-    if (Temp[i] == 0.0) {Temp[i] = oldTemp;}
+    if (Temp[i] < 1.0) {Temp[i] = oldTemp;}
     if (Temp[i] == 85.0) {Temp[i] = oldTemp;}
     if (i==ControlDevice) {currentTemp=Temp[i];}
     
